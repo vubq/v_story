@@ -1,6 +1,7 @@
 package com.v_story.v_story_be.Entities;
 
-import com.v_story.v_story_be.Enums.UserEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.v_story.v_story_be.Enums.UserStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -18,26 +20,33 @@ import java.sql.Timestamp;
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", unique = true, nullable = false)
-    private Integer id;
+    @Id
+    @Column(name = "id", unique = true, nullable = false)
+    private long id;
 
-    @Column(name = "USER_NAME", nullable = false, length = 255)
+    @Basic
+    @Column(name = "user_name", nullable = false, length = 255)
     private String userName;
 
-    @Column(name = "PASSWORD", nullable = false, length = 255)
+    @Basic
+    @Column(name = "password", nullable = false, length = 255)
     private String password;
 
-    @Column(name = "ROLES")
-    private Enum<UserEnum> roles;
+    @Basic
+    @Column(name = "status", nullable = false, length = 100)
+    @Enumerated(EnumType.STRING)
+    private UserStatusEnum status;
 
-    @Column(name = "STATUS", nullable = false, length = 100)
-    private String status;
-
-    @Column(name = "CREATED_AT")
+    @Basic
+    @Column(name = "created_at")
     private Timestamp createdAt;
 
-    @Column(name = "UPDATE_AT")
+    @Basic
+    @Column(name = "update_at")
     private Timestamp updateAt;
+
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name ="user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles;
 }
