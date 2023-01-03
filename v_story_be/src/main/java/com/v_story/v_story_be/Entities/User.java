@@ -30,6 +30,10 @@ public class User implements Serializable {
     private String userName;
 
     @Basic
+    @Column(name = "email", nullable = false, length = 255)
+    private String email;
+
+    @Basic
     @Column(name = "password", nullable = false, length = 255)
     private String password;
 
