@@ -25,7 +25,7 @@ public class TokenAuthService {
         response.addHeader(AUTH_HEADER_NAME, jwtUtils.generateJwtToken((UserDetailsImpl) user));
         response.addHeader(AUTH_USERNAME, user.getUsername());
     }
-
+///
     public Authentication generateAuthenticationFromRequest(HttpServletRequest request) {
         final String token = request.getHeader(AUTH_HEADER_NAME);
         if (token == null || token.isEmpty())
