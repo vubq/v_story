@@ -1,10 +1,8 @@
-package com.v_story.v_story_be.Config.Security.Filter;
+package com.v_story.v_story_be.Security.Jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.v_story.v_story_be.Config.Security.DTO.JwtRequest;
-import com.v_story.v_story_be.Config.Security.Service.AppUserDetailsService;
-import com.v_story.v_story_be.Config.Security.Service.TokenAuthService;
-import com.v_story.v_story_be.Config.Security.Service.UserAuthentication;
+import com.v_story.v_story_be.Security.DTO.AuthUserDTO;
+import com.v_story.v_story_be.Security.Service.UserDetailsServiceImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,13 +18,13 @@ import java.io.IOException;
 
 public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter {
     private final TokenAuthService tokenAuthService;
+    private final UserDetailsServiceImpl userDetailsService;
 
-    private final AppUserDetailsService appUserDetailsService;
-
-    public StatelessLoginFilter(String urlMapping, TokenAuthService tokenAuthenticationService, AppUserDetailsService appUserDetailsService, AuthenticationManager authenticationManager) {
+    public StatelessLoginFilter(String urlMapping, TokenAuthService tokenAuthService,
+                                UserDetailsServiceImpl userDetailsService, AuthenticationManager authenticationManager) {
         super(urlMapping);
-        this.tokenAuthService = tokenAuthenticationService;
-        this.appUserDetailsService = appUserDetailsService;
+        this.tokenAuthService = tokenAuthService;
+        this.userDetailsService = userDetailsService;
         setAuthenticationManager(authenticationManager);
     }
 
@@ -35,18 +33,18 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
         if (!request.getMethod().equals("POST")) {
             return null;
         }
-        final JwtRequest user = this.toUser(request);
+        final AuthUserDTO user = this.toUser(request);
         final UsernamePasswordAuthenticationToken loginToken = user.toAuthenticationToken();
         return getAuthenticationManager().authenticate(loginToken);
     }
 
-    private JwtRequest toUser(HttpServletRequest request) throws IOException {
-        return new ObjectMapper().readValue(request.getInputStream(), JwtRequest.class);
+    private AuthUserDTO toUser(HttpServletRequest request) throws IOException {
+        return new ObjectMapper().readValue(request.getInputStream(), AuthUserDTO.class);
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        final UserDetails authenticatedUser = this.appUserDetailsService.loadUserByUsername(authResult.getName());
+        final UserDetails authenticatedUser = this.userDetailsService.loadUserByUsername(authResult.getName());
         final UserAuthentication userAuthentication = new UserAuthentication(authenticatedUser);
         this.tokenAuthService.addJwtTokenToHeader(response, userAuthentication);
         SecurityContextHolder.getContext().setAuthentication(userAuthentication);

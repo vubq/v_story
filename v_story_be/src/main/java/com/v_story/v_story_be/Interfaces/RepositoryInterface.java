@@ -5,6 +5,6 @@ import java.util.Optional;
 
 public interface RepositoryInterface<T> {
     public List<T> getAll();
-    public Optional<T> get(Integer id);
+    public Optional<T> get(Long id);
     public Optional<T> save(T t);
 }

@@ -1,4 +1,4 @@
-package com.v_story.v_story_be.Config.Security.Service;
+package com.v_story.v_story_be.Security.Jwt;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -7,48 +7,39 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 public class UserAuthentication implements Authentication {
-    /**
-     * The Constant serialVersionUID.
-     */
     private static final long serialVersionUID = -1139920528880230251L;
 
-    /**
-     * The user.
-     */
-    private final UserDetails userDetails;
+    private final UserDetails user;
 
-    /**
-     * The authenticated.
-     */
     private boolean authenticated = true;
 
-    public UserAuthentication(UserDetails userDetails) {
-        this.userDetails = userDetails;
+    public UserAuthentication(UserDetails user) {
+        this.user = user;
     }
 
     @Override
     public String getName() {
-        return userDetails.getUsername();
+        return user.getUsername();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return userDetails.getAuthorities();
+        return user.getAuthorities();
     }
 
     @Override
     public Object getCredentials() {
-        return userDetails.getPassword();
+        return user.getPassword();
     }
 
     @Override
     public UserDetails getDetails() {
-        return userDetails;
+        return user;
     }
 
     @Override
     public Object getPrincipal() {
-        return userDetails.getUsername();
+        return user.getUsername();
     }
 
     @Override
