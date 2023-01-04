@@ -50,7 +50,7 @@ public class AuthAPI {
     @Autowired
     RefreshTokenService refreshTokenService;
 
-    @PostMapping("/signin")
+    @PostMapping("/sign-in")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager
@@ -65,12 +65,12 @@ public class AuthAPI {
         List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+//        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
         JwtResponse jwtResponse = new JwtResponse();
         jwtResponse.setEmail(userDetails.getEmail());
         jwtResponse.setUsername(userDetails.getUsername());
-        jwtResponse.setRefreshToken(refreshToken.getToken());
+//        jwtResponse.setRefreshToken(refreshToken.getToken());
         jwtResponse.setRoles(roles);
         jwtResponse.setToken(jwt);
         jwtResponse.setId(userDetails.getId());
