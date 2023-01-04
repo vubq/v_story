@@ -63,11 +63,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-            .csrf()
+        http.csrf()
             .disable();
-        http
-            .authorizeRequests()
+        http.authorizeRequests()
             .antMatchers("/api/auth/**")
             .permitAll()
             .and()
@@ -76,14 +74,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http
-            .authorizeRequests()
+        http.authorizeRequests()
             .antMatchers("/api/user/**")
             .hasAnyAuthority("SUPER_ADMIN");
         http
             .addFilterBefore(new StatelessLoginFilter("/api/auth/login", tokenAuthService, userDetailsService, authenticationManager()), UsernamePasswordAuthenticationFilter.class);
-        http
-            .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
 //        http.cors().configurationSource(request -> {
 //            final CorsConfiguration cors = new CorsConfiguration();
 //            cors.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:8000"));
