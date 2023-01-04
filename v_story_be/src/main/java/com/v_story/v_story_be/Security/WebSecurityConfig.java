@@ -68,7 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .disable();
         http
             .authorizeRequests()
-            .antMatchers("/api/**")
+            .antMatchers("/api/auth/**")
             .permitAll()
             .and()
             .exceptionHandling()
@@ -76,6 +76,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http
+            .authorizeRequests()
+            .antMatchers("/api/user/**")
+            .hasAnyAuthority("SUPER_ADMIN");
         http
             .addFilterBefore(new StatelessLoginFilter("/api/auth/login", tokenAuthService, userDetailsService, authenticationManager()), UsernamePasswordAuthenticationFilter.class);
         http
